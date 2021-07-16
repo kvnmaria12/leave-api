@@ -15,7 +15,6 @@ app.post('/leave', (req, res) => {
         database: 'leave_application'
     })
 
-
     let employeeId = req.body.employeeId;
     let fromDate = req.body.fromDate;
     let toDate = req.body.toDate;
@@ -39,11 +38,11 @@ app.post('/leave', (req, res) => {
 
                 if (err) throw err;
 
-                return res.send('Your leave has been approved');
+                return res.status(200).send('Your Leave Has been Approved');
             })
 
         } else {
-            return res.send('Please enter the appropriate employeeId')
+            return res.status(400).send('Please send a Appropriate EmployeeId');
         }
     })
 

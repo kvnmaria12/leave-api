@@ -46,7 +46,7 @@ const init = async () => {
             return res.status(400).send('Please enter the To Date')
         }
 
-        const sqlQueryEmployeeId = `SELECT ID FROM employee WHERE ID = ${req.body.employeeId} `;
+        const sqlQueryEmployeeId = `SELECT * FROM employee WHERE ID = ${req.body.employeeId} `;
 
         con.query(sqlQueryEmployeeId, (err, data) => {
 
@@ -54,12 +54,13 @@ const init = async () => {
                 return res.status(500).send(`Your EmployeeId does not match with the Company's Database`)
             }
 
-            const sqlQuery = `UPDATE employee
+            console.log(data, req.body.employeeId);
+
+            if (req.body.employeeId == data[0].ID) {
+
+                const sqlQuery = `UPDATE employee
                               SET status = 'Approved'
                               WHERE ID = ${req.body.employeeId}`;
-
-
-            if (req.body.employeeId === data) {
 
                 con.query(sqlQuery, err => {
 

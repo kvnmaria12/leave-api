@@ -66,7 +66,7 @@ const init = async () => {
 
         con.query(sqlQuery, [values], (err, result) => {
 
-            if (err) return console.log(err);
+            if (err) return res.status(500).send('There is Some Database Error')
 
             return res.send('Data has been entered Successfully')
         });

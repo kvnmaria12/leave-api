@@ -81,6 +81,52 @@ const init = async () => {
         });
     });
 
+    app.post('/leave', (req, res) => {
+
+        let employeeId = req.body.employeeId;
+        let fromDate = req.body.fromDate;
+        let toDate = req.body.toDate;
+
+        if (!employeeId) {
+            return res.status(400).send('Please enter your EmployeeId')
+        } else if (!fromDate) {
+            return res.status(400).send('Please enter the From Date')
+        } else if (!toDate) {
+            return res.status(400).send('Please enter the To Date')
+        }
+
+        const sqlQueryEmployeeId = `SELECT * FROM employee WHERE ID = ${req.body.employeeId} `;
+
+        con.query(sqlQueryEmployeeId, (err, data) => {
+
+            if (err) {
+                return res.status(500).send(`Your EmployeeId does not match with the Company's Database`)
+            }
+
+            console.log(data, req.body.employeeId);
+
+            if (req.body.employeeId == data[0].ID) {
+
+                const sqlQuery = `UPDATE employee
+                              SET status = 'Approved'
+                              WHERE ID = ${req.body.employeeId}`;
+
+                con.query(sqlQuery, err => {
+
+                    if (err) return res.status(500).send('Some Database Error');
+
+                    return res.status(200).send('Your Leave has been approved')
+                })
+            } else {
+                res.status(400).send(`Your EmployeeId Does not Match with Company's Record`)
+            }
+
+        })
+
+    })
+
+
+
     app.listen(PORT, () => console.log(`Server started listening at ${PORT}`));
 
 }

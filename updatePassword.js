@@ -74,9 +74,7 @@ const init = async () => {
     } catch (error) {
 
         if (error) return console.log(error);
-
     }
-
 }
 
 init();

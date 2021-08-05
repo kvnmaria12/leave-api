@@ -62,7 +62,7 @@ const init = async () => {
                               WHERE id = '${employeeId}'`;
 
 
-            con.query(sqlQuery, (err, result) => {
+            con.query(sqlQuery, (err) => {
 
                 if (err) return console.log(err.message);
 

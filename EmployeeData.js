@@ -30,7 +30,13 @@ function databaseConnection() {
 const init = async () => {
 
     try {
+
         const app = express();
+
+        module.exports = function () {
+            const app = express();
+            return app;
+        }
 
         app.use(express.json());
         app.use(express.urlencoded({ extended: true }));
@@ -140,7 +146,7 @@ const init = async () => {
 
         })
 
-        app.listen(PORT, () => console.log(`Server started listening at ${PORT}`));
+        app.listen(() => console.log(`Server Started Listening at Port ${PORT}`));
 
     } catch (error) {
         console.log(error);
@@ -149,3 +155,4 @@ const init = async () => {
 }
 
 init();
+

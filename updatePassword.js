@@ -2,7 +2,7 @@ const mysql = require('mysql');
 const express = require('express');
 const bcrypt = require('bcrypt');
 
-const PORT = 7777;
+const PORT = 7775;
 
 const con = mysql.createConnection({
 
@@ -55,9 +55,11 @@ const init = async () => {
 
             const updatedPassword = await bcrypt.hash(password, saltRounds);
 
+            console.log(updatedPassword);
+
             const sqlQuery = `UPDATE employee
-                              SET password = ${updatedPassword}
-                              WHERE id = ${employeeId}`;
+                              SET password = '${updatedPassword}'
+                              WHERE id = '${employeeId}'`;
 
 
             con.query(sqlQuery, (err, result) => {

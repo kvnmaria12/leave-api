@@ -97,16 +97,13 @@ const init = async () => {
             }
 
 
-            // con.query(sqlQueryEmployeeId, (err, data) => {
-
-
             const sqlQuery = 'INSERT INTO employeeLeave(fromDate, toDate, employeeId) VALUES ?';
 
             const values = [
                 [fromDate, toDate, employeeId]
             ]
 
-            con.query(sqlQuery, [values], (err, result) => {
+            con.query(sqlQuery, [values], (err) => {
 
                 if (err) return console.log('Data is not Inserted');
 
@@ -114,7 +111,7 @@ const init = async () => {
 
             })
 
-            const sqlQueryEmployeeId = `SELECT * FROM employee WHERE ID = ${employeeId} `;
+            const sqlQueryEmployeeId = `SELECT * FROM employee WHERE ID = '${employeeId}' `;
 
             con.query(sqlQueryEmployeeId, (err, data) => {
 
@@ -122,18 +119,21 @@ const init = async () => {
 
                 console.log(data, req.body.employeeId);
 
-                if (req.body.employeeId == data[0].ID) {
+                if (data.length > 0) {
 
-                    const sqlQuery = `UPDATE employeeLeave
+                    if (req.body.employeeId == data[0].ID) {
+
+                        const sqlQuery = `UPDATE employeeLeave
                                       SET status = 'Approved'
                                       WHERE employeeId = ${req.body.employeeId}`;
 
-                    con.query(sqlQuery, err => {
+                        con.query(sqlQuery, err => {
 
-                        if (err) return res.status(500).send('Some Database Error');
+                            if (err) return res.status(500).send('Some Database Error');
 
-                        return res.status(200).send('Your Leave has been approved')
-                    })
+                            return res.status(200).send('Your Leave has been approved')
+                        })
+                    }
                 } else {
                     res.status(400).send(`Your EmployeeId Does not Match with Company's Record`);
                 }

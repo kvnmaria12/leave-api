@@ -2,7 +2,7 @@ const express = require('express');
 const mysql = require('mysql');
 const bcrypt = require('bcrypt');
 
-const PORT = 7776;
+const PORT = 7777;
 
 const con = mysql.createConnection({
     host: 'localhost',
@@ -37,9 +37,9 @@ const init = async () => {
 
         await databaseConnection();
 
-        app.post('/employeeDetails', (req, res) => {
+        app.post('/loginValidation', (req, res) => {
 
-            const employeeId = req.body.id;
+            const employeeId = req.body.employeeId;
             const password = req.body.password;
 
             if (!employeeId) {
@@ -48,7 +48,7 @@ const init = async () => {
                 return res.status(400).send('Please Enter a Password')
             }
 
-            const sqlQuery = `SELECT ID, PASSWORD FROM employee_credentials WHERE id = ${employeeId}`;
+            const sqlQuery = `SELECT ID, PASSWORD FROM employee WHERE id = '${employeeId}'`;
 
             con.query(sqlQuery, async (err, result) => {
 
@@ -59,8 +59,10 @@ const init = async () => {
                 console.log(employeeId, result);
 
                 if (result.length > 0) {
+
                     const employeeDbPassword = await bcrypt.compare(password, result[0].PASSWORD);
 
+                    console.log(employeeDbPassword);
 
                     if (!employeeDbPassword) {
                         return res.status(400).send('Please Enter a Valid Password')
@@ -71,10 +73,6 @@ const init = async () => {
                 } else {
                     return res.status(400).send(`Your EmployeeId does not match with the Company's Database`)
                 }
-
-
-
-
             })
         })
 

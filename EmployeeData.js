@@ -47,7 +47,6 @@ const init = async () => {
             const password = req.body.password;
             const total_leave = req.body.total_leave;
 
-
             if (!id) {
                 return res.status(400).send('Please enter the EmployeeId');
             } else if (!name) {
@@ -96,7 +95,6 @@ const init = async () => {
                 return res.status(400).send('Please enter the To Date')
             }
 
-
             const sqlQuery = 'INSERT INTO employeeLeave(fromDate, toDate, employeeId) VALUES ?';
 
             const values = [
@@ -113,19 +111,19 @@ const init = async () => {
 
             const sqlQueryEmployeeId = `SELECT * FROM employee WHERE ID = '${employeeId}' `;
 
-            con.query(sqlQueryEmployeeId, (err, data) => {
+            con.query(sqlQueryEmployeeId, (err, dbResult) => {
 
                 if (err) return console.log(err.message)
 
-                console.log(data, req.body.employeeId);
+                console.log(dbResult, req.body.employeeId);
 
-                if (data.length > 0) {
+                if (dbResult.length > 0) {
 
-                    if (req.body.employeeId == data[0].ID) {
+                    if (req.body.employeeId == dbResult[0].ID) {
 
                         const sqlQuery = `UPDATE employeeLeave
-                                      SET status = 'Approved'
-                                      WHERE employeeId = ${req.body.employeeId}`;
+                                          SET status = 'Approved'
+                                          WHERE employeeId = '${req.body.employeeId}'`;
 
                         con.query(sqlQuery, err => {
 

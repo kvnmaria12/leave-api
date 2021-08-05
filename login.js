@@ -50,23 +50,23 @@ const init = async () => {
 
             const sqlQuery = `SELECT ID, PASSWORD FROM employee WHERE id = '${employeeId}'`;
 
-            con.query(sqlQuery, async (err, result) => {
+            con.query(sqlQuery, async (err, dbResult) => {
 
                 if (err) {
                     return res.status(400).send(`Something Went Wrong`)
                 }
 
-                console.log(employeeId, result);
+                console.log(employeeId, dbResult);
 
-                if (result.length > 0) {
+                if (dbResult.length > 0) {
 
-                    const employeeDbPassword = await bcrypt.compare(password, result[0].PASSWORD);
+                    const employeeDbPassword = await bcrypt.compare(password, dbResult[0].PASSWORD);
 
                     console.log(employeeDbPassword);
 
                     if (!employeeDbPassword) {
                         return res.status(400).send('Please Enter a Valid Password')
-                    } else if (employeeId == result[0].ID && employeeDbPassword) {
+                    } else if (employeeId == dbResult[0].ID && employeeDbPassword) {
                         return res.status(200).send('Welcome')
                     }
 

@@ -1,6 +1,7 @@
 const express = require('express');
 const mysql = require('mysql');
 const bcrypt = require('bcrypt');
+const cors = require('cors');
 
 const PORT = 7777;
 
@@ -26,6 +27,15 @@ function databaseConnection() {
     })
 }
 
+const corsOption = {
+
+    "origin": "*",
+    "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+    "preflightContinue": false,
+    "optionsSuccessStatus": 204
+
+}
+
 const init = async () => {
 
     try {
@@ -37,7 +47,7 @@ const init = async () => {
 
         await databaseConnection();
 
-        app.post('/loginValidation', (req, res) => {
+        app.post('/loginValidation', cors(corsOption), (req, res) => {
 
             const employeeId = req.body.employeeId;
             const password = req.body.password;

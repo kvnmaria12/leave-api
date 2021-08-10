@@ -1,6 +1,7 @@
 const mysql = require('mysql');
 const express = require('express');
 const bcrypt = require('bcrypt');
+const cors = require('cors');
 const app = require('./app');
 
 const PORT = 7775;
@@ -29,6 +30,9 @@ function databaseConnection() {
 
     })
 }
+
+// adding the cors middleware
+app.use(cors());
 
 const init = async () => {
 

@@ -28,14 +28,8 @@ function databaseConnection() {
     })
 }
 
-const corsOption = {
-
-    "origin": "*",
-    "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
-    "preflightContinue": false,
-    "optionsSuccessStatus": 204
-
-}
+// adding the cors middleware
+app.use(cors());
 
 const init = async () => {
 
@@ -46,7 +40,7 @@ const init = async () => {
 
         await databaseConnection();
 
-        app.post('/loginValidation', cors(corsOption), (req, res) => {
+        app.post('/loginValidation', (req, res) => {
 
             const employeeId = req.body.employeeId;
             const password = req.body.password;

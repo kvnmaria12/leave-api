@@ -2,6 +2,7 @@ const express = require('express');
 const mysql = require('mysql');
 const bcrypt = require('bcrypt');
 const cors = require('cors');
+const app = require('./app');
 
 const PORT = 7777;
 
@@ -39,8 +40,6 @@ const corsOption = {
 const init = async () => {
 
     try {
-
-        const app = express();
 
         app.use(express.json());
         app.use(express.urlencoded({ extended: true }));

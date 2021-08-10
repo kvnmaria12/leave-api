@@ -78,7 +78,9 @@ const init = async () => {
 
                 if (err) return console.log(err.message);
 
-                return res.status(200).send('Password Update  Successfully')
+                return res.status(200).send({
+                    Message: 'Password Update  Successfully'
+                })
             })
 
         })

@@ -33,16 +33,12 @@ const init = async () => {
 
         const app = express();
 
-        module.exports = function () {
-            const app = express();
-            return app;
-        }
-
         app.use(express.json());
         app.use(express.urlencoded({ extended: true }));
 
         await databaseConnection();
 
+        // Route for adding an new Employee
         app.post('/employeeData', async (req, res) => {
 
             const id = req.body.id;
@@ -87,6 +83,9 @@ const init = async () => {
             });
         });
 
+
+
+        // Route for LeaveApplications
         app.post('/leaveapplication', (req, res) => {
 
             let employeeId = req.body.employeeId;
@@ -151,6 +150,7 @@ const init = async () => {
     } catch (error) {
         console.log(error);
     }
+
 
 }
 

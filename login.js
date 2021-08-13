@@ -1,42 +1,10 @@
-const express = require('express');
-const mysql = require('mysql');
 const bcrypt = require('bcrypt');
-const cors = require('cors');
-const app = require('./app');
+const { app, databaseConnection, con } = require('./app');
 
-const PORT = 7777;
-
-const con = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'kvnmaria@12',
-    database: 'leave_application'
-});
-
-
-function databaseConnection() {
-    return new Promise((resolve, reject) => {
-
-        con.connect((err) => {
-            if (!err) {
-                resolve(true)
-            } else {
-                reject(err)
-            }
-        })
-
-    })
-}
-
-// adding the cors middleware
-app.use(cors());
 
 const init = async () => {
 
     try {
-
-        app.use(express.json());
-        app.use(express.urlencoded({ extended: true }));
 
         await databaseConnection();
 
@@ -94,8 +62,6 @@ const init = async () => {
                 }
             })
         })
-
-        app.listen(PORT, () => console.log(`Server Started listening at port ${PORT}`))
 
     } catch (error) {
 

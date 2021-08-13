@@ -1,75 +1,60 @@
 const bcrypt = require('bcrypt');
-const { app, databaseConnection, con } = require('./app');
+const { app } = require('./app');
+const { con } = require('./databaseConnection');
 
-
-const init = async () => {
+app.post('/loginValidation', (req, res) => {
 
     try {
+        const employeeId = req.body.employeeId;
+        const password = req.body.password;
 
-        await databaseConnection();
+        if (!employeeId && !password) {
+            return res.status(400).send({
+                Message: 'Please Enter the EmployeeId and Password'
+            })
+        } else if (!employeeId) {
+            return res.status(400).send({
+                Message: 'Please Enter the EmployeeId'
+            })
+        } else if (!password) {
+            return res.status(400).send({
+                Message: 'Please Enter the Password '
+            })
+        }
 
-        app.post('/loginValidation', (req, res) => {
+        const sqlQuery = `SELECT ID, PASSWORD FROM employee WHERE id = '${employeeId}'`;
 
-            try {
-                const employeeId = req.body.employeeId;
-                const password = req.body.password;
+        con.query(sqlQuery, async (err, dbResult) => {
 
-                if (!employeeId && !password) {
+            if (err) {
+                return res.status(500).send({
+                    Message: 'Something Went Wrong'
+                })
+            }
+
+            if (dbResult.length > 0) {
+
+                const employeeDbPassword = await bcrypt.compare(password, dbResult[0].PASSWORD);
+
+                if (!employeeDbPassword) {
                     return res.status(400).send({
-                        Message: 'Please Enter the EmployeeId and Password'
+                        Message: 'Please Enter a Valid Password'
                     })
-                } else if (!employeeId) {
-                    return res.status(400).send({
-                        Message: 'Please Enter the EmployeeId'
-                    })
-                } else if (!password) {
-                    return res.status(400).send({
-                        Message: 'Please Enter the Password '
+                } else if (employeeId == dbResult[0].ID && employeeDbPassword) {
+                    return res.status(200).send({
+                        Message: 'Welcome'
                     })
                 }
 
-                const sqlQuery = `SELECT ID, PASSWORD FROM employee WHERE id = '${employeeId}'`;
-
-                con.query(sqlQuery, async (err, dbResult) => {
-
-                    if (err) {
-                        return res.status(500).send({
-                            Message: 'Something Went Wrong'
-                        })
-                    }
-
-                    console.log(employeeId, dbResult);
-
-                    if (dbResult.length > 0) {
-
-                        const employeeDbPassword = await bcrypt.compare(password, dbResult[0].PASSWORD);
-
-                        console.log(employeeDbPassword);
-
-                        if (!employeeDbPassword) {
-                            return res.status(400).send({
-                                Message: 'Please Enter a Valid Password'
-                            })
-                        } else if (employeeId == dbResult[0].ID && employeeDbPassword) {
-                            return res.status(200).send({
-                                Message: 'Welcome'
-                            })
-                        }
-
-                    } else {
-                        return res.status(400).send({
-                            Message: `Your EmployeeId does not match with the Company's Database`
-                        })
-                    }
+            } else {
+                return res.status(400).send({
+                    Message: `Your EmployeeId does not match with the Company's Database`
                 })
-            } catch (error) {
-                return res.status(500).send('Some Server Side Error')
             }
         })
-
     } catch (error) {
-        throw error;
+        return res.status(500).send('Some Server Side Error')
     }
-}
+})
 
-init();
+

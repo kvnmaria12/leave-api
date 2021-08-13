@@ -22,9 +22,9 @@ function databaseConnection() {
 
         con.connect(err => {
             if (!err) {
-                return resolve(true)
+                resolve(true)
             } else {
-                return reject(err)
+                reject(err)
             }
         })
         return;

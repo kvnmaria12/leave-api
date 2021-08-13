@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
-const { databaseConnection, con } = require('./databaseConnection');
 const dotenv = require('dotenv');
+const { databaseConnection } = require('./databaseConnection');
 
 dotenv.config();
 
@@ -18,8 +18,8 @@ const PORT = process.env.PORT;
 
 app.listen(PORT, () => console.log(`Server Started Listening at Port ${PORT}`));
 
+databaseConnection();
+
 module.exports = {
-    app,
-    databaseConnection,
-    con
+    app
 };

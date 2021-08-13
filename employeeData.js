@@ -17,27 +17,27 @@ app.post('/employeeData', async (req, res) => {
 
         if (!id) {
             return res.status(400).send({
-                Message: 'Please enter the EmployeeId'
+                Message: 'Please enter your EmployeeId'
             });
         } else if (!name) {
             return res.status(400).send({
-                Message: 'Please enter the Name'
+                Message: 'Please enter your Name'
             });
         } else if (!mail) {
             return res.status(400).send({
-                Message: 'Please enter the Email'
+                Message: 'Please enter your Email'
             });
         } else if (!mobile) {
             return res.status(400).send({
-                Message: 'Please enter the Mobile No'
+                Message: 'Please enter your Mobile No'
             });
         } else if (!role) {
             return res.status(400).send({
-                Message: 'Please enter the Role '
+                Message: 'Please enter your Role '
             });
         } else if (!password) {
             return res.status(400).send({
-                Message: 'Please enter the Password'
+                Message: 'Please enter your Password'
             });
         } else if (!total_leave) {
             return res.status(400).send({
@@ -71,8 +71,6 @@ app.post('/employeeData', async (req, res) => {
         })
     }
 });
-
-
 
 // Route for LeaveApplications(/leaveapplication)
 app.post('/leaveapplication', (req, res) => {
@@ -120,9 +118,9 @@ app.post('/leaveapplication', (req, res) => {
 
         con.query(sqlQueryEmployeeId, (err, dbResult) => {
 
-            if (err) return console.log(err.message)
-
-            console.log(dbResult, req.body.employeeId);
+            if (err) return res.status(500).send({
+                Message: 'Database Error'
+            })
 
             if (dbResult.length > 0) {
 
@@ -157,6 +155,3 @@ app.post('/leaveapplication', (req, res) => {
     }
 
 })
-
-
-init();

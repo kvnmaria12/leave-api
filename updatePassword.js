@@ -1,11 +1,26 @@
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const { app } = require('./app');
 const { con } = require('./databaseConnection');
 
 // /login
-app.post('/updatePassword', async (req, res) => {
+app.post('/updatePassword', verifyToken, async (req, res) => {
 
     try {
+
+        jwt.verify(req.token, 'avemaria@12', (err, authData) => {
+
+            if (err) {
+                res.sendStatus(404)
+            } else {
+                res.json({
+                    authData
+                })
+            }
+
+        })
+
+
         const employeeId = req.body.employeeId;
         const password = req.body.password;
 
@@ -48,6 +63,21 @@ app.post('/updatePassword', async (req, res) => {
         })
     }
 })
+
+function verifyToken(req, res, next) {
+
+    // Get the toke 
+    const bearerHeader = req.headers['authorization'];
+    // to check if the token is undefined or not
+    if (typeof bearerHeader !== 'undefined') {
+        const bearer = bearerHeader.split(' ');
+        const bearerToken = bearer[1];
+        req.token = bearerToken;
+        next();
+    } else {
+        res.sendStatus(403)
+    }
+}
 
 
 

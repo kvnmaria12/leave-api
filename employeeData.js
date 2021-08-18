@@ -1,12 +1,26 @@
 const { app } = require('./app');
 const bcrypt = require('bcrypt');
 const { con } = require('./databaseConnection');
+const jwt = require('jsonwebtoken');
 
 
 // Route for adding an new Employee
-app.post('/employeeData', async (req, res) => {
+app.post('/employeeData', verifyToken, async (req, res) => {
 
     try {
+
+        jwt.verify(req.token, 'avemaria@12', (err, authData) => {
+
+            if (err) {
+                res.sendStatus(403)
+            } else {
+                res.json({
+                    authData
+                })
+            }
+
+        })
+
         const id = req.body.id;
         const name = req.body.name;
         const mail = req.body.mail;
@@ -72,10 +86,26 @@ app.post('/employeeData', async (req, res) => {
     }
 });
 
+
+
+
 // Route for LeaveApplications(/leaveapplication)
-app.post('/leaveapplication', (req, res) => {
+app.post('/leaveapplication', verifyToken, (req, res) => {
 
     try {
+
+        jwt.verify(req.token, 'avemaria@12', (err, authData) => {
+
+            if (err) {
+                res.sendStatus(403)
+            } else {
+                res.json({
+                    authData
+                })
+            }
+
+        })
+
         let employeeId = req.body.employeeId;
         let fromDate = req.body.fromDate;
         let toDate = req.body.toDate;
@@ -155,3 +185,20 @@ app.post('/leaveapplication', (req, res) => {
     }
 
 })
+
+
+// Middleware to Verify the Token
+function verifyToken(req, res, next) {
+
+    // Get the toke 
+    const bearerHeader = req.headers['authorization'];
+    // to check if the token is undefined or not
+    if (typeof bearerHeader !== 'undefined') {
+        const bearer = bearerHeader.split(' ');
+        const bearerToken = bearer[1];
+        req.token = bearerToken;
+        next();
+    } else {
+        res.sendStatus(403)
+    }
+}

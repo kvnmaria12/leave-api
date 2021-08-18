@@ -7,107 +7,86 @@ const jwt = require('jsonwebtoken');
 // Route for adding an new Employee
 app.post('/employeeData', verifyToken, async (req, res) => {
 
-
     try {
 
-        jwt.verify(req.token, 'avemaria@12', (err, authData) => {
+        const id = req.body.id;
+        const name = req.body.name;
+        const mail = req.body.mail;
+        const mobile = req.body.mobile;
+        const role = req.body.role;
+        const password = req.body.password;
+        const total_leave = req.body.total_leave;
+
+        if (!id) {
+            return res.status(400).send({
+                Message: 'Please enter your EmployeeId'
+            });
+        } else if (!name) {
+            return res.status(400).send({
+                Message: 'Please enter your Name'
+            });
+        } else if (!mail) {
+            return res.status(400).send({
+                Message: 'Please enter your Email'
+            });
+        } else if (!mobile) {
+            return res.status(400).send({
+                Message: 'Please enter your Mobile No'
+            });
+        } else if (!role) {
+            return res.status(400).send({
+                Message: 'Please enter your Role '
+            });
+        } else if (!password) {
+            return res.status(400).send({
+                Message: 'Please enter your Password'
+            });
+        } else if (!total_leave) {
+            return res.status(400).send({
+                Message: 'Please enter the Total_Leave'
+            });
+        }
+
+        const saltRounds = 10;
+
+        const userPassword = await bcrypt.hash(password, saltRounds);
+
+        const sqlQuery = 'INSERT INTO employee(ID, Name, Mail, Mobile, Role, Password, Total_Leave) VALUES ?';
+
+        const values = [
+            [id, name, mail, mobile, role, userPassword, total_leave]
+        ]
+
+        con.query(sqlQuery, [values], (err) => {
 
             if (err) {
-                res.sendStatus(403)
+                return res.status(500).send({
+                    Message: 'DataBase Error'
+                })
             } else {
-                const id = req.body.id;
-                const name = req.body.name;
-                const mail = req.body.mail;
-                const mobile = req.body.mobile;
-                const role = req.body.role;
-                const password = req.body.password;
-                const total_leave = req.body.total_leave;
 
-                if (!id) {
-                    return res.status(400).send({
-                        Message: 'Please enter your EmployeeId'
-                    });
-                } else if (!name) {
-                    return res.status(400).send({
-                        Message: 'Please enter your Name'
-                    });
-                } else if (!mail) {
-                    return res.status(400).send({
-                        Message: 'Please enter your Email'
-                    });
-                } else if (!mobile) {
-                    return res.status(400).send({
-                        Message: 'Please enter your Mobile No'
-                    });
-                } else if (!role) {
-                    return res.status(400).send({
-                        Message: 'Please enter your Role '
-                    });
-                } else if (!password) {
-                    return res.status(400).send({
-                        Message: 'Please enter your Password'
-                    });
-                } else if (!total_leave) {
-                    return res.status(400).send({
-                        Message: 'Please enter the Total_Leave'
-                    });
-                }
-
-                const saltRounds = 10;
-
-                const userPassword = await bcrypt.hash(password, saltRounds);
-
-                const sqlQuery = 'INSERT INTO employee(ID, Name, Mail, Mobile, Role, Password, Total_Leave) VALUES ?';
-
-                const values = [
-                    [id, name, mail, mobile, role, userPassword, total_leave]
-                ]
-
-                con.query(sqlQuery, [values], (err) => {
-
-                    if (err) return res.status(500).send({
-                        Message: 'DataBase Error'
-                    })
-
+                jwt.verify(req.token, 'avemaria@12', (err, authData) => {
                     return res.send({
                         Message: 'Data has been entered Successfully'
                     })
-                });
-
+                })
             }
-
-        })
+        });
 
 
     } catch (error) {
-
+        return res.status(500).send({
+            Message: 'Some Server Side Error'
+        })
     }
 
-
-
-
-
-
-
-
-
 });
-
-
 
 
 // Route for LeaveApplications(/leaveapplication)
 app.post('/leaveapplication', verifyToken, (req, res) => {
 
     try {
-
-        jwt.verify(req.token, 'avemaria@12', (err, authData) => {
-
-            if (err) {
-                res.sendStatus(403)
-            }
-
-        })
 
         let employeeId = req.body.employeeId;
         let fromDate = req.body.fromDate;
@@ -165,13 +144,21 @@ app.post('/leaveapplication', verifyToken, (req, res) => {
 
                     con.query(sqlQuery, err => {
 
-                        if (err) return res.status(500).send({
-                            Message: 'Database Error'
-                        })
+                        if (err) {
+                            return res.status(500).send({
+                                Message: 'Database Error'
+                            })
+                        } else {
+                            jwt.verify(req.token, 'avemaria@12', (err, authData) => {
 
-                        return res.status(200).send({
-                            Message: 'Your Leave has been approved'
-                        })
+                                return res.status(200).send({
+                                    Message: 'Your Leave has been approved'
+                                })
+
+                            })
+                        }
+
+
                     })
                 }
             } else {

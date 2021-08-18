@@ -8,19 +8,6 @@ app.post('/updatePassword', verifyToken, async (req, res) => {
 
     try {
 
-        jwt.verify(req.token, 'avemaria@12', (err, authData) => {
-
-            if (err) {
-                res.sendStatus(404)
-            } else {
-                res.json({
-                    authData
-                })
-            }
-
-        })
-
-
         const employeeId = req.body.employeeId;
         const password = req.body.password;
 
@@ -49,13 +36,19 @@ app.post('/updatePassword', verifyToken, async (req, res) => {
 
         con.query(sqlQuery, (err) => {
 
-            if (err) return res.status(500).send({
-                Message: 'Some DataBase Error'
-            })
+            if (err) {
+                return res.status(500).send({
+                    Message: 'Some DataBase Error'
+                })
+            } else {
 
-            return res.status(200).send({
-                Message: 'Password Update Successfully'
-            })
+                jwt.verify(req.token, 'avemaria@12', (err, authData) => {
+                    return res.status(200).send({
+                        Message: 'Password Update Successfully'
+                    })
+                })
+            }
+
         })
     } catch (error) {
         return res.status(500).send({

@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const { app } = require('./app');
 const { con } = require('./databaseConnection');
+const jwt = require('jsonwebtoken');
 
 app.post('/loginValidation', (req, res) => {
 
@@ -22,6 +23,7 @@ app.post('/loginValidation', (req, res) => {
             })
         }
 
+
         const sqlQuery = `SELECT ID, PASSWORD FROM employee WHERE id = '${employeeId}'`;
 
         con.query(sqlQuery, async (err, dbResult) => {
@@ -41,9 +43,24 @@ app.post('/loginValidation', (req, res) => {
                         Message: 'Please Enter a Valid Password'
                     })
                 } else if (employeeId == dbResult[0].ID && employeeDbPassword) {
-                    return res.status(200).send({
-                        Message: 'Welcome'
+                    // json webtoken
+                    const employee = {
+                        ID: employeeId,
+                        Password: password
+                    };
+
+                    jwt.sign({ user: employee }, 'avemaria@12', { expiresIn: '1hr' }, (err, token) => {
+
+                        if (err) {
+                            res.status(500).send('Server Side Error')
+                        }
+                        return res.status(200).send({
+                            Message: 'Welcome',
+                            Token: token
+                        })
+
                     })
+
                 }
 
             } else {

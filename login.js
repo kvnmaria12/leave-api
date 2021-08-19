@@ -56,7 +56,8 @@ app.post('/loginValidation', (req, res) => {
                         }
                         return res.status(200).send({
                             Message: 'Welcome',
-                            Token: token
+                            Token: token,
+                            EmployeeId: employeeId
                         })
 
                     })

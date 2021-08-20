@@ -118,9 +118,7 @@ app.post('/leaveapplication', verifyToken, (req, res) => {
 
         con.query(sqlQuery, [values], (err) => {
 
-            if (err) return res.status(500).send({
-                Message: 'Database Error'
-            })
+            if (err) return console.log(err);
 
             console.log('Data Entered Successfully');
 
@@ -130,9 +128,7 @@ app.post('/leaveapplication', verifyToken, (req, res) => {
 
         con.query(sqlQueryEmployeeId, (err, dbResult) => {
 
-            if (err) return res.status(500).send({
-                Message: 'Database Error'
-            })
+            if (err) return console.log(err)
 
             if (dbResult.length > 0) {
 
@@ -140,7 +136,7 @@ app.post('/leaveapplication', verifyToken, (req, res) => {
 
                     const sqlQuery = `UPDATE employeeLeave
                                               SET status = 'Approved'
-                                              WHERE employeeId = '${req.body.employeeId}'`;
+                                              WHERE employeeId = ${req.body.employeeId}`;
 
                     con.query(sqlQuery, err => {
 
@@ -150,6 +146,8 @@ app.post('/leaveapplication', verifyToken, (req, res) => {
                             })
                         } else {
                             jwt.verify(req.token, 'avemaria@12', (err, authData) => {
+
+                                if (err) return res.sendStatus(401);
 
                                 return res.status(200).send({
                                     Message: 'Your Leave has been approved'

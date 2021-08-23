@@ -1,9 +1,8 @@
 const bcrypt = require('bcrypt');
-const { app } = require('./app');
 const { con } = require('./databaseConnection');
 const jwt = require('jsonwebtoken');
 
-app.post('/loginValidation', (req, res) => {
+const login = (req, res) => {
 
     try {
         const employeeId = req.body.employeeId;
@@ -73,6 +72,8 @@ app.post('/loginValidation', (req, res) => {
     } catch (error) {
         return res.status(500).send('Some Server Side Error')
     }
-})
+}
+
+module.exports = login;
 
 

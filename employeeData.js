@@ -171,7 +171,7 @@ app.post('/leaveapplication', verifyToken, (req, res) => {
                         } else {
                             jwt.verify(req.token, 'avemaria@12', (err, authData) => {
 
-                                if (err) return res.sendStatus(401);
+                                if (err) return console.log(err);
 
                                 return res.status(200).send({
                                     Message: 'Your Leave has been approved'

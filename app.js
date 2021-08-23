@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const { databaseConnection } = require('./databaseConnection');
 const dotenv = require('dotenv');
-const { employeeData, leaveApplication } = require('./employeeData');
+// const employeeData = require('./employeeData');
 
 dotenv.config();
 
@@ -24,7 +24,5 @@ app.post('/leaveapplication', leaveApplication);
 const PORT = process.env.PORT;
 
 app.listen(PORT, () => console.log(`Server Started Listening at Port ${PORT}`));
-
-
 
 

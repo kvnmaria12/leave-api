@@ -162,7 +162,7 @@ const leaveApplication = (verifyToken, async (req, res) => {
                                 Message: 'Database Error'
                             })
                         } else {
-                            jwt.verify(req.Token, 'avemaria@12', (err, authData) => {
+                            jwt.verify(req.token, 'avemaria@12', (err, authData) => {
 
                                 if (err) return console.log(err);
 
@@ -190,6 +190,7 @@ const leaveApplication = (verifyToken, async (req, res) => {
     }
 
 })
+
 
 
 // Middleware to Verify the Token

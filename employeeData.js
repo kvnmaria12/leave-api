@@ -77,7 +77,7 @@ const employeeData = (async (req, res) => {
 
 
 // Route for LeaveApplications(/leaveapplication)
-const leaveApplication = (verifyToken, async (req, res) => {
+const leaveApplication = (async (req, res) => {
 
     try {
 
@@ -211,5 +211,6 @@ function verifyToken(req, res, next) {
 
 module.exports = {
     employeeData,
-    leaveApplication
+    leaveApplication,
+    verifyToken
 }

@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const { databaseConnection } = require('./databaseConnection');
 const dotenv = require('dotenv');
-const { employeeData, leaveApplication } = require('./employeeData');
+const { employeeData, leaveApplication, verifyToken } = require('./employeeData');
 
 dotenv.config();
 
@@ -19,7 +19,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.post('/employeeData', employeeData);
-app.post('/leaveapplication', leaveApplication);
+app.post('/leaveapplication', verifyToken, leaveApplication);
 
 const PORT = process.env.PORT;
 

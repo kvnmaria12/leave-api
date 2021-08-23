@@ -1,10 +1,10 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { app } = require('./app');
 const { con } = require('./databaseConnection');
 
 // /login
-app.post('/updatePassword', verifyToken, async (req, res) => {
+
+const updatePassword = (async (req, res) => {
 
     try {
 
@@ -30,8 +30,8 @@ app.post('/updatePassword', verifyToken, async (req, res) => {
         const updatedPassword = await bcrypt.hash(password, saltRounds);
 
         const sqlQuery = `UPDATE employee
-                                  SET password = '${updatedPassword}'
-                                  WHERE id = '${employeeId}'`;
+                          SET password = '${updatedPassword}'
+                          WHERE id = '${employeeId}'`;
 
 
         con.query(sqlQuery, (err) => {
@@ -43,6 +43,11 @@ app.post('/updatePassword', verifyToken, async (req, res) => {
             } else {
 
                 jwt.verify(req.token, 'avemaria@12', (err, authData) => {
+
+                    if (err) {
+                        return res.sendStatus(401);
+                    }
+
                     return res.status(200).send({
                         Message: 'Password Update Successfully'
                     })
@@ -55,7 +60,9 @@ app.post('/updatePassword', verifyToken, async (req, res) => {
             Message: 'Some Server Error'
         })
     }
+
 })
+
 
 function verifyToken(req, res, next) {
 
@@ -72,5 +79,9 @@ function verifyToken(req, res, next) {
     }
 }
 
+module.exports = {
+    updatePassword,
+    verifyToken
+}
 
 

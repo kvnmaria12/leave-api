@@ -100,7 +100,6 @@ app.post('/leaveapplication', verifyToken, (req, res) => {
 
             if (data.length > 0) {
 
-
                 let fromDate = req.body.fromDate;
                 let toDate = req.body.toDate;
                 let reason = req.body.reason;

@@ -202,7 +202,7 @@ function verifyToken(req, res, next) {
     if (typeof bearerHeader !== 'undefined') {
         const bearer = bearerHeader.split(' ');
         const bearerToken = bearer[1];
-        req.Token = bearerToken;
+        req.token = bearerToken;
         next();
     } else {
         res.sendStatus(401)

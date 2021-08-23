@@ -89,38 +89,63 @@ app.post('/leaveapplication', verifyToken, (req, res) => {
     try {
 
         let employeeId = req.body.employeeId;
-        let fromDate = req.body.fromDate;
-        let toDate = req.body.toDate;
 
-        if (!employeeId && !fromDate && !toDate) {
-            return res.status(400).send({
-                Message: 'Please enter your EmployeeId, fromDate and toDate'
-            })
-        } else if (!employeeId) {
-            return res.status(400).send({
-                Message: 'Please Enter the EmployeeId'
-            })
-        } else if (!toDate) {
-            return res.status(400).send({
-                Message: 'Please Enter the toDate'
-            })
-        } else if (!fromDate) {
-            return res.status(400).send({
-                Message: 'Please Enter the fromDate'
-            })
-        }
+        const employeeIdQuery = `SELECT * FROM employee WHERE ID= ${employeeId}`;
 
-        const sqlQuery = 'INSERT INTO employeeLeave(fromDate, toDate, employeeId) VALUES ?';
+        con.query(employeeIdQuery, (err, data) => {
 
-        const values = [
-            [fromDate, toDate, employeeId]
-        ]
+            if (err) return res.status(500).send({
+                Message: 'Some DataBase Error'
+            });
 
-        con.query(sqlQuery, [values], (err) => {
+            if (data.length > 0) {
 
-            if (err) return console.log(err);
 
-            console.log('Data Entered Successfully');
+                let fromDate = req.body.fromDate;
+                let toDate = req.body.toDate;
+                let reason = req.body.reason;
+
+                if (!employeeId && !fromDate && !toDate && !reason) {
+                    return res.status(400).send({
+                        Message: 'Please enter your EmployeeId, fromDate, toDate and reason'
+                    });
+                } else if (!employeeId) {
+                    return res.status(400).send({
+                        Message: 'Please Enter the EmployeeId'
+                    });
+                } else if (!toDate) {
+                    return res.status(400).send({
+                        Message: 'Please Enter the toDate'
+                    });
+                } else if (!fromDate) {
+                    return res.status(400).send({
+                        Message: 'Please Enter the fromDate'
+                    });
+                } else if (!reason) {
+                    return res.status(400).send({
+                        Message: 'Please Enter the Reason'
+                    });
+                }
+
+                const sqlQuery = 'INSERT INTO employeeLeave(fromDate, toDate, reason, employeeId) VALUES ?';
+
+                const values = [
+                    [fromDate, toDate, reason, employeeId]
+                ]
+
+                con.query(sqlQuery, [values], (err) => {
+
+                    if (err) return console.log(err);
+
+                    console.log('Data Entered Successfully');
+
+                })
+
+            } else {
+                return res.status(400).send({
+                    Message: 'Please Enter a Valid EmployeeId'
+                });
+            }
 
         })
 
@@ -132,11 +157,11 @@ app.post('/leaveapplication', verifyToken, (req, res) => {
 
             if (dbResult.length > 0) {
 
-                if (req.body.employeeId == dbResult[0].ID) {
+                if (employeeId == dbResult[0].ID) {
 
                     const sqlQuery = `UPDATE employeeLeave
-                                              SET status = 'Approved'
-                                              WHERE employeeId = ${req.body.employeeId}`;
+                                      SET status = 'Approved'
+                                      WHERE employeeId = ${req.body.employeeId}`;
 
                     con.query(sqlQuery, err => {
 
@@ -169,7 +194,7 @@ app.post('/leaveapplication', verifyToken, (req, res) => {
     } catch (error) {
         return res.status(500).send({
             Message: "Some Server Side Error"
-        })
+        });
     }
 
 })
@@ -187,6 +212,6 @@ function verifyToken(req, res, next) {
         req.token = bearerToken;
         next();
     } else {
-        res.sendStatus(403)
+        res.sendStatus(401)
     }
 }

@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 
 
 // Route for adding an new Employee
-const leave_application = (verifyToken, async (req, res) => {
+const employeeData = (async (req, res) => {
 
     try {
         const id = req.body.id;
@@ -58,18 +58,10 @@ const leave_application = (verifyToken, async (req, res) => {
         con.query(sqlQuery, [values], (err) => {
 
             if (err) {
-                return res.status(500).send({
-                    Message: 'DataBase Error'
-                })
+                console.log(err);
             } else {
-
-                jwt.verify(req.token, 'avemaria@12', (err, authData) => {
-
-                    if (err) return res.sendStatus(401);
-
-                    return res.send({
-                        Message: 'Data has been entered Successfully'
-                    })
+                return res.send({
+                    Message: 'Data has been entered Successfully'
                 })
             }
         });
@@ -83,123 +75,121 @@ const leave_application = (verifyToken, async (req, res) => {
 
 })
 
-module.exports = leave_application;
-
 
 // Route for LeaveApplications(/leaveapplication)
-// app.post('/leaveapplication', verifyToken, (req, res) => {
+const leaveApplication = (verifyToken, async (req, res) => {
 
-//     try {
+    try {
 
-//         let employeeId = req.body.employeeId;
+        let employeeId = req.body.employeeId;
 
-//         const employeeIdQuery = `SELECT * FROM employee WHERE ID= ${employeeId}`;
+        const employeeIdQuery = `SELECT * FROM employee WHERE ID= ${employeeId}`;
 
-//         con.query(employeeIdQuery, (err, data) => {
+        con.query(employeeIdQuery, (err, data) => {
 
-//             if (err) return res.status(500).send({
-//                 Message: 'Some DataBase Error'
-//             });
+            if (err) return res.status(500).send({
+                Message: 'Some DataBase Error'
+            });
 
-//             if (data.length > 0) {
+            if (data.length > 0) {
 
-//                 let fromDate = req.body.fromDate;
-//                 let toDate = req.body.toDate;
-//                 let reason = req.body.reason;
+                let fromDate = req.body.fromDate;
+                let toDate = req.body.toDate;
+                let reason = req.body.reason;
 
-//                 if (!employeeId && !fromDate && !toDate && !reason) {
-//                     return res.status(400).send({
-//                         Message: 'Please enter your EmployeeId, fromDate, toDate and reason'
-//                     });
-//                 } else if (!employeeId) {
-//                     return res.status(400).send({
-//                         Message: 'Please Enter the EmployeeId'
-//                     });
-//                 } else if (!toDate) {
-//                     return res.status(400).send({
-//                         Message: 'Please Enter the toDate'
-//                     });
-//                 } else if (!fromDate) {
-//                     return res.status(400).send({
-//                         Message: 'Please Enter the fromDate'
-//                     });
-//                 } else if (!reason) {
-//                     return res.status(400).send({
-//                         Message: 'Please Enter the Reason'
-//                     });
-//                 }
+                if (!employeeId && !fromDate && !toDate && !reason) {
+                    return res.status(400).send({
+                        Message: 'Please enter your EmployeeId, fromDate, toDate and reason'
+                    });
+                } else if (!employeeId) {
+                    return res.status(400).send({
+                        Message: 'Please Enter the EmployeeId'
+                    });
+                } else if (!toDate) {
+                    return res.status(400).send({
+                        Message: 'Please Enter the toDate'
+                    });
+                } else if (!fromDate) {
+                    return res.status(400).send({
+                        Message: 'Please Enter the fromDate'
+                    });
+                } else if (!reason) {
+                    return res.status(400).send({
+                        Message: 'Please Enter the Reason'
+                    });
+                }
 
-//                 const sqlQuery = 'INSERT INTO employeeLeave(fromDate, toDate, reason, employeeId) VALUES ?';
+                const sqlQuery = 'INSERT INTO employeeLeave(fromDate, toDate, reason, employeeId) VALUES ?';
 
-//                 const values = [
-//                     [fromDate, toDate, reason, employeeId]
-//                 ]
+                const values = [
+                    [fromDate, toDate, reason, employeeId]
+                ]
 
-//                 con.query(sqlQuery, [values], (err) => {
+                con.query(sqlQuery, [values], (err) => {
 
-//                     if (err) return console.log(err);
+                    if (err) return console.log(err);
 
-//                     console.log('Data Entered Successfully');
+                    console.log('Data Entered Successfully');
 
-//                 })
+                })
 
-//             } else {
-//                 return res.status(400).send({
-//                     Message: 'Please Enter a Valid EmployeeId'
-//                 });
-//             }
+            } else {
+                return res.status(400).send({
+                    Message: 'Please Enter a Valid EmployeeId'
+                });
+            }
 
-//         })
+        })
 
-//         const sqlQueryEmployeeId = `SELECT * FROM employee WHERE ID = '${employeeId}' `;
+        const sqlQueryEmployeeId = `SELECT * FROM employee WHERE ID = '${employeeId}' `;
 
-//         con.query(sqlQueryEmployeeId, (err, dbResult) => {
+        con.query(sqlQueryEmployeeId, (err, dbResult) => {
 
-//             if (err) return console.log(err)
+            if (err) return console.log(err)
 
-//             if (dbResult.length > 0) {
+            if (dbResult.length > 0) {
 
-//                 if (employeeId == dbResult[0].ID) {
+                if (employeeId == dbResult[0].ID) {
 
-//                     const sqlQuery = `UPDATE employeeLeave
-//                                       SET status = 'Approved'
-//                                       WHERE employeeId = ${req.body.employeeId}`;
+                    const sqlQuery = `UPDATE employeeLeave
+                                      SET status = 'Approved'
+                                      WHERE employeeId = ${req.body.employeeId}`;
 
-//                     con.query(sqlQuery, err => {
+                    con.query(sqlQuery, err => {
 
-//                         if (err) {
-//                             return res.status(500).send({
-//                                 Message: 'Database Error'
-//                             })
-//                         } else {
-//                             jwt.verify(req.token, 'avemaria@12', (err, authData) => {
+                        if (err) {
+                            return res.status(500).send({
+                                Message: 'Database Error'
+                            })
+                        } else {
+                            jwt.verify(req.Token, 'avemaria@12', (err, authData) => {
 
-//                                 if (err) return console.log(err);
+                                if (err) return console.log(err);
 
-//                                 return res.status(200).send({
-//                                     Message: 'Your Leave has been approved'
-//                                 })
+                                return res.status(200).send({
+                                    Message: 'Your Leave has been approved'
+                                })
 
-//                             })
-//                         }
+                            })
+                        }
 
 
-//                     })
-//                 }
-//             } else {
-//                 res.status(400).send({
-//                     Message: `Your EmployeeId Does not Match with Company's Record`
-//                 });
-//             }
+                    })
+                }
+            } else {
+                res.status(400).send({
+                    Message: `Your EmployeeId Does not Match with Company's Record`
+                });
+            }
 
-//         })
-//     } catch (error) {
-//         return res.status(500).send({
-//             Message: "Some Server Side Error"
-//         });
-//     }
+        })
+    } catch (error) {
+        return res.status(500).send({
+            Message: "Some Server Side Error"
+        });
+    }
 
-// })
+})
 
 
 // Middleware to Verify the Token
@@ -211,9 +201,14 @@ function verifyToken(req, res, next) {
     if (typeof bearerHeader !== 'undefined') {
         const bearer = bearerHeader.split(' ');
         const bearerToken = bearer[1];
-        req.token = bearerToken;
+        req.Token = bearerToken;
         next();
     } else {
         res.sendStatus(401)
     }
+}
+
+module.exports = {
+    employeeData,
+    leaveApplication
 }

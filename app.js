@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const { databaseConnection } = require('./databaseConnection');
 const dotenv = require('dotenv');
+const leave_application = require('./employeeData');
 
 dotenv.config();
 
@@ -14,6 +15,8 @@ app.use(express.json());
 // adding the middleware for urlencoded
 app.use(express.urlencoded({ extended: true }));
 
+app.post('/employeeData', leave_application);
+
 const PORT = process.env.PORT;
 
 app.listen(PORT, () => console.log(`Server Started Listening at Port ${PORT}`));
@@ -21,6 +24,7 @@ app.listen(PORT, () => console.log(`Server Started Listening at Port ${PORT}`));
 // Database Connection 
 databaseConnection();
 
-module.exports = {
-    app
-};
+
+// module.exports = {
+//     app
+// };

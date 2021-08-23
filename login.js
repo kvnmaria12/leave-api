@@ -48,7 +48,7 @@ const login = (req, res) => {
                         Password: password
                     };
 
-                    jwt.sign({ user: employee }, 'avemaria@12', { expiresIn: '1hr' }, (err, token) => {
+                    jwt.sign({ user: employee }, 'avemaria@12', { expiresIn: '5hr' }, (err, token) => {
 
                         if (err) {
                             res.status(500).send('Server Side Error')
